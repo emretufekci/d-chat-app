@@ -1,14 +1,20 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, Avatar, SendButton, AttachmentButton, InfoButton, ConversationHeader, ChatContainer, MessageList, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
+import { MainContainer, Avatar, SendButton, ConversationHeader, ChatContainer, MessageList, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
 import {akaneModel, eliotModel, emilyModel, joeModel, users} from "./data/data";
+import { username, user } from './User';
+import GUN from 'gun';
+const db = GUN();
 
 function Chat({username, room}) {
   const inputRef = useRef();
   const [msgInputValue, setMsgInputValue] = useState("");
   const [messages, setMessages] = useState([]);
 
+
   const handleSend = message => {
+    const index = new Date().toISOString();
+    db.get('chat').get(index).put(message);
     setMessages([...messages, {
       message,
       direction: 'outgoing'
@@ -17,10 +23,50 @@ function Chat({username, room}) {
     inputRef.current.focus();
   };
 
+  useEffect(() => {
+
+    var match = {
+      // lexical queries are kind of like a limited RegEx or Glob.
+      '.': {
+        // property selector
+        '>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(), // find any indexed property larger ~3 hours ago
+      },
+      '-': 1, // filter in reverse
+    };
+
+   // Get Messages
+   db.get('chat')
+   .map(match)
+   .once(async (data, id) => {
+     if (data) {
+       // Key for end-to-end encryption
+       const key = '#universityofistanbul';
+       var message = {
+         // transform the data
+         who: await db.user(data).get('alias'),
+         what: (await GUN.SEA.decrypt(data.what, key)) + '', // force decrypt as text.
+         when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
+       };
+       if (message.what && message.what !== 'undefined') {
+          console.log(message.what)
+          setMessages([...messages, {
+          message: message.what,
+          direction: 'incoming',
+          position: 'single',
+          sentTime: message.when
+        }]);
+
+            <Avatar src={emilyModel.avatar} name={"Emily"} />
+       }
+     }
+   });
+  });
+
   return (
     <div style={{
       height: "500px"
     }}>
+      <MainContainer>
 <ChatContainer>
                         <ConversationHeader>
                         <Avatar src={joeModel.avatar} name={"Zoe"}/>
@@ -28,15 +74,7 @@ function Chat({username, room}) {
                                 </ConversationHeader>
                                 
                         <MessageList>
-                        <Message model={{
-        message: "Hello my friend",
-        sentTime: "15 mins ago",
-        sender: "Emily",
-        direction: "incoming",
-        position: "single"
-      }}>
-            <Avatar src={emilyModel.avatar} name={"Emily"} />
-          </Message>
+
                             {messages.map((m, i) => <Message key={i} model={m} />)}
                             <Message.Footer sentTime="şimdi" />
                         </MessageList>
@@ -60,6 +98,7 @@ function Chat({username, room}) {
 
                         </div>
                         </ChatContainer>     
+                        </MainContainer>
         </div>
     )
 }

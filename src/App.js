@@ -2,11 +2,14 @@ import logo from './logo.svg';
 import './App.css';
 import { useState } from "react";
 import Chat from './Chat';
+import GUN from 'gun';
+
 function App() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
-
+  const db = GUN();
+  
   const joinRoom = () => {
     if (username !== "" && room !== "") {
       setShowChat(true);
