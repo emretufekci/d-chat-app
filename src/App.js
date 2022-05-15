@@ -3,6 +3,7 @@ import './App.css';
 import { useState } from "react";
 import Chat from './Chat';
 import GUN from 'gun';
+import { user } from './User';
 
 function App() {
   const [username, setUsername] = useState("");
@@ -12,9 +13,20 @@ function App() {
   
   const joinRoom = () => {
     if (username !== "" && room !== "") {
+      user.auth(username, room, ({ err }) => err && alert(err));
       setShowChat(true);
     }
   };
+
+  function createRoom() {
+    user.create(username, room, ({ err }) => {
+      if (err) {
+        alert(err);
+      } else {
+        joinRoom();
+      }
+    });
+  }
 
   return (
     <div className="App">
@@ -36,6 +48,8 @@ function App() {
             }}
           />
           <button onClick={joinRoom}>Sohbete Katıl</button>
+          <button onClick={createRoom}>Oda Kur</button>
+
         </div>
       ) : (<Chat/>)}
     </div>

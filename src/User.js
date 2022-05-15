@@ -16,7 +16,6 @@ user.get('alias').on(v => username.set(v))
 
 db.on('auth', async(event) => {
     const alias = await user.get('alias'); // username string
-    username.set(alias);
-
+    username = alias
     console.log(`signed in as ${alias}`);
 });

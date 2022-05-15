@@ -12,9 +12,13 @@ function Chat({username, room}) {
   const [messages, setMessages] = useState([]);
 
 
-  const handleSend = message => {
+  const handleSend = async message => {
+    const secret = await GUN.SEA.encrypt(message, '#istanbulcerrahpasauniversity');
+    const message2 = user.get('all').set({ what: secret });
     const index = new Date().toISOString();
-    db.get('chat').get(index).put(message);
+    console.log(message2)
+    db.get('chat-istanbul').get(index).put(message);
+    console.log(message)
     setMessages([...messages, {
       message,
       direction: 'outgoing'
@@ -35,25 +39,26 @@ function Chat({username, room}) {
     };
 
    // Get Messages
-   db.get('chat')
+   db.get('chat-istanbul')
    .map(match)
    .once(async (data, id) => {
+   // console.log("data is")
+   // console.log(data.what)
      if (data) {
        // Key for end-to-end encryption
-       const key = '#universityofistanbul';
-       var message = {
+       const key = '#istanbulcerrahpasauniversity';
+       var message2 = {
          // transform the data
          who: await db.user(data).get('alias'),
-         what: (await GUN.SEA.decrypt(data.what, key)) + '', // force decrypt as text.
+         what: await GUN.SEA.decrypt(data.what, key) + '', // force decrypt as text.
          when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
        };
-       if (message.what && message.what !== 'undefined') {
-          console.log(message.what)
+       if (message2.what && message2.what !== 'undefined') {
           setMessages([...messages, {
-          message: message.what,
+          message: message2.what,
           direction: 'incoming',
           position: 'single',
-          sentTime: message.when
+          sentTime: message2.when
         }]);
 
             <Avatar src={emilyModel.avatar} name={"Emily"} />
