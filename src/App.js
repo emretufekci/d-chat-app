@@ -7,23 +7,30 @@ import { user } from './User';
 
 function App() {
   const [username, setUsername] = useState("");
-  const [room, setRoom] = useState("");
+  const [password, setPassword] = useState("");
   const [showChat, setShowChat] = useState(false);
   const db = GUN();
   
-  const joinRoom = () => {
-    if (username !== "" && room !== "") {
-      user.auth(username, room, ({ err }) => err && alert(err));
-      setShowChat(true);
+  const login = () => {
+    if (username !== "" && password !== "") {
+      user.auth(username, password, ({ err })  => {
+        if (err) {
+          alert(err);
+          console.log("if" + err);
+        } else {
+          console.log("else" + err);
+          setShowChat(true);
+        }
+      });
     }
   };
 
-  function createRoom() {
-    user.create(username, room, ({ err }) => {
+  function register() {
+    user.create(username, password, ({ err }) => {
       if (err) {
         alert(err);
       } else {
-        joinRoom();
+        login();
       }
     });
   }
@@ -32,7 +39,7 @@ function App() {
     <div className="App">
       {!showChat ? (
         <div className="joinChatContainer">
-          <h3>Sohbete Katıl</h3>
+          <h3>Giriş Yap</h3>
           <input
             type="text"
             placeholder="Ali.."
@@ -42,14 +49,14 @@ function App() {
           />
           <input
             type="text"
-            placeholder="Oda Numarası..."
+            placeholder="Parola..."
             onChange={(event) => {
-              setRoom(event.target.value);
+              setPassword(event.target.value);
             }}
           />
-          <button onClick={joinRoom}>Sohbete Katıl</button>
-          <button onClick={createRoom}>Oda Kur</button>
-
+          <button onClick={login}>Giriş Yap</button>
+          <button onClick={register}>Üye Ol</button>
+          
         </div>
       ) : (<Chat/>)}
     </div>

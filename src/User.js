@@ -10,12 +10,12 @@ export const db = GUN();
 export const user = db.user().recall({sessionStorage: true});
 
 // Current User's username
-export const username = "emre"
+export let gunUsername = ""
 
-user.get('alias').on(v => username.set(v))
+user.get('alias').on(v => gunUsername.set(v))
 
 db.on('auth', async(event) => {
     const alias = await user.get('alias'); // username string
-    username = alias
+    gunUsername = alias
     console.log(`signed in as ${alias}`);
 });

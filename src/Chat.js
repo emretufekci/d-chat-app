@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, Avatar, SendButton, ConversationHeader, ChatContainer, MessageList, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
 import {akaneModel, eliotModel, emilyModel, joeModel, users} from "./data/data";
-import { username, user } from './User';
+import { gunUsername, user } from './User';
 import GUN from 'gun';
 const db = GUN();
 
@@ -75,7 +75,7 @@ function Chat({username, room}) {
 <ChatContainer>
                         <ConversationHeader>
                         <Avatar src={joeModel.avatar} name={"Zoe"}/>
-                                <ConversationHeader.Content userName="Zoe" info="Room: 123" />        
+                                <ConversationHeader.Content userName={gunUsername} info="Room: 123" />        
                                 </ConversationHeader>
                                 
                         <MessageList>
