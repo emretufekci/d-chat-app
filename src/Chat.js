@@ -17,10 +17,16 @@ function Chat({username, room}) {
     const message2 = user.get('all').set({ what: secret });
     const index = new Date().toISOString();
     console.log(message2)
-    db.get('chat-istanbul').get(index).put(message);
+    db.get('chat-istanbul').get(index).put(message2);
+    
+    console.log("[GONDERILEN MESAJ]")
     console.log(message)
+    console.log("[GONDERILEN MESAJ 2]")
+    console.log(message2)
+    console.log(index)
+
     setMessages([...messages, {
-      message,
+      message: message2.what,
       direction: 'outgoing'
     }]);
     setMsgInputValue("");
@@ -28,16 +34,7 @@ function Chat({username, room}) {
   };
 
   useEffect(() => {
-
-    var match = {
-      // lexical queries are kind of like a limited RegEx or Glob.
-      '.': {
-        // property selector
-        '>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(), // find any indexed property larger ~3 hours ago
-      },
-      '-': 1, // filter in reverse
-    };
-
+    var match = {'.': {'>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(),},'-': 1,};
    // Get Messages
    db.get('chat-istanbul')
    .map(match)
@@ -53,14 +50,22 @@ function Chat({username, room}) {
          what: await GUN.SEA.decrypt(data.what, key) + '', // force decrypt as text.
          when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
        };
-       if (message2.what && message2.what !== 'undefined') {
+       
+       
+       console.log("[GELEN MESAJ]") 
+       console.log(message2)
+       console.log(message2.what)
+       console.log(message2.who)
+       console.log(message2.when)
+        console.log(id)
+
+       if (message2.what && message2.what !== 'undefined' && message2.who != gunUsername) {
           setMessages([...messages, {
           message: message2.what,
           direction: 'incoming',
           position: 'single',
           sentTime: message2.when
         }]);
-
             <Avatar src={emilyModel.avatar} name={"Emily"} />
        }
      }
