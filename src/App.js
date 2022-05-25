@@ -11,7 +11,7 @@ function App() {
   const [showChat, setShowChat] = useState(false);
   const db = GUN({
     peers: [
-      'http://localhost:3030/gun'
+      'http://localhost:8765/gun'
     ]
   });
   

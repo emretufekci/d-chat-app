@@ -6,7 +6,7 @@ import 'gun/axe';
 // Database
 export const db = GUN({
     peers: [
-      'http://localhost:3030/gun'
+      'http://localhost:8765/gun'
     ]
   });
   

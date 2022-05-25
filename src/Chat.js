@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {useSelector, useState, useRef, useEffect } from "react";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, Avatar, SendButton, ConversationHeader, ChatContainer, MessageList, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
 import {akaneModel, eliotModel, emilyModel, joeModel, users} from "./data/data";
@@ -6,45 +6,20 @@ import { gunUsername, user } from './User';
 import GUN from 'gun';
 const db = GUN();
 
-function Chat({username, room}) {
+function Chat({username, password}) {
   const inputRef = useRef();
   const [msgInputValue, setMsgInputValue] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([])
 
-
-  const handleSend = async message => {
-    const secret = await GUN.SEA.encrypt(message, '#istanbulcerrahpasauniversity');
-    const message2 = user.get('all').set({ what: secret });
-    const index = new Date().toISOString();
-    console.log("Message")
-    console.log(message)
-    console.log("Message 2")
-    console.log(message2)
-    db.get('chat-istanbul').get(index).put(message2);
-    
-    console.log("[GONDERILEN MESAJ]")
-    console.log(message)
-    console.log("[GONDERILEN MESAJ 2]")
-    console.log(message2)
-    console.log(index)
-
-    setMessages([...messages, {
-      message: message2.what,
-      direction: 'outgoing'
-    }]);
-    setMsgInputValue("");
-    inputRef.current.focus();
-  };
-
+ 
   useEffect(() => {
     var match = {'.': {'>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(),},'-': 1,};
    // Get Messages
    db.get('chat-istanbul')
    .map(match)
    .once(async (data, id) => {
-   // console.log("data is")
-   // console.log(data.what)
-     if (data) {
+
+   if (data) {
        // Key for end-to-end encryption
        const key = '#istanbulcerrahpasauniversity';
        var message2 = {
@@ -53,14 +28,6 @@ function Chat({username, room}) {
          what: await GUN.SEA.decrypt(data.what, key) + '', // force decrypt as text.
          when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
        };
-       
-       
-       console.log("[GELEN MESAJ]") 
-       console.log(message2)
-       console.log(message2.what)
-       console.log(message2.who)
-       console.log(message2.when)
-        console.log(id)
 
        if (message2.what && message2.what !== 'undefined' && message2.who != gunUsername) {
           setMessages([...messages, {
@@ -70,10 +37,42 @@ function Chat({username, room}) {
           sentTime: message2.when
         }]);
             <Avatar src={emilyModel.avatar} name={"Emily"} />
-       }
+        
+        }
      }
    });
-  });
+  }, []);
+
+  const handleSend = async message => {
+
+    /**
+     * We encrypt the message with the key.
+     * The key is a secret shared between the sender and the receiver.
+     * The key is used to encrypt the message.
+     * The key is used to decrypt the message.
+     * The key is used to sign the message.
+     * The key is used to verify the message.
+     * AND MOST IMPORTANT THING!!!
+     * message2 is the encrypted message. that's why we're putting it into the database.
+     * message is just sending message without encryption we can pass it to react.
+     */
+
+    const secret = await GUN.SEA.encrypt(message, '#istanbulcerrahpasauniversity');
+    const message2 = user.get('all').set({ what: secret });
+    const index = new Date().toISOString();
+    console.log("giden mesaj: ", message);
+
+    db.get('chat-istanbul').get(index).put(message2);
+    
+    setMessages([...messages, {
+      message: message,
+      direction: 'outgoing'
+    }]);
+    setMsgInputValue("");
+    message = '';
+    inputRef.current.focus();
+  };
+  
 
   return (
     <div style={{
@@ -87,8 +86,7 @@ function Chat({username, room}) {
                                 </ConversationHeader>
                                 
                         <MessageList>
-
-                            {messages.map((m, i) => <Message key={i} model={m} />)}
+                {messages.map((m, i) => <Message key={i} model={m} />)}
                             <Message.Footer sentTime="şimdi" />
                         </MessageList>
                         
