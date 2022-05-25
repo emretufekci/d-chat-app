@@ -4,8 +4,12 @@ import 'gun/axe';
 
 
 // Database
-export const db = GUN();
-
+export const db = GUN({
+    peers: [
+      'http://localhost:3030/gun'
+    ]
+  });
+  
 // Gun User
 export const user = db.user().recall({sessionStorage: true});
 

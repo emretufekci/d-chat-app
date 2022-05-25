@@ -9,7 +9,11 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showChat, setShowChat] = useState(false);
-  const db = GUN();
+  const db = GUN({
+    peers: [
+      'http://localhost:3030/gun'
+    ]
+  });
   
   const login = () => {
     if (username !== "" && password !== "") {

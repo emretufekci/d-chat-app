@@ -16,9 +16,11 @@ function Chat({username, room}) {
     const secret = await GUN.SEA.encrypt(message, '#istanbulcerrahpasauniversity');
     const message2 = user.get('all').set({ what: secret });
     const index = new Date().toISOString();
+    console.log("Message")
+    console.log(message)
+    console.log("Message 2")
     console.log(message2)
     db.get('chat-istanbul').get(index).put(message);
-    console.log(message)
     setMessages([...messages, {
       message,
       direction: 'outgoing'
