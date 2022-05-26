@@ -41,6 +41,7 @@ function App() {
 
   return (
     <div className="App">
+      
       {!showChat ? (
         <div className="joinChatContainer">
           <h3>Giriş Yap</h3>
@@ -52,7 +53,7 @@ function App() {
             }}
           />
           <input
-            type="text"
+            type="password"
             placeholder="Parola..."
             onChange={(event) => {
               setPassword(event.target.value);

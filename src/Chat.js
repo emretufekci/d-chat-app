@@ -82,7 +82,7 @@ function Chat({username, password}) {
 <ChatContainer>
                         <ConversationHeader>
                         <Avatar src={joeModel.avatar} name={"Zoe"}/>
-                                <ConversationHeader.Content userName={gunUsername} info="Room: 123" />        
+                                <ConversationHeader.Content userName={gunUsername} info="Oda: 'chat-istanbul'" />        
                                 </ConversationHeader>
                                 
                         <MessageList>
