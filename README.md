@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# P2P Instant Messaging dApp w/CRDT&React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project aims decentralized chat application using CRDT data structure (via GunJS db)
 
 ## Available Scripts
 
